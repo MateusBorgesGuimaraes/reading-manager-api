@@ -23,11 +23,15 @@ router.post('/', async (request, response) => {
   response.status(201).json(savedUser);
 });
 
+//pode ser folder
 router.get('/', async (request, response) => {
-  const users = await User.find({}).populate('blogs', {
-    url: 1,
-    title: 1,
-    author: 1,
+  const users = await User.find({}).populate('folders', {
+    name: 1,
+    color: 1,
+    id: 1,
+    books: 1,
+    _createdAt: 1,
+    //não sei se é assim
   });
   response.json(users);
 });

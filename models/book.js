@@ -9,7 +9,7 @@ const bookSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  page: {
+  pagesNumber: {
     type: Number,
     required: true,
   },
@@ -26,6 +26,10 @@ const bookSchema = mongoose.Schema({
   timeSpent: {
     type: String,
     required: true,
+  },
+  folder: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Folder',
   },
   markers: [
     {

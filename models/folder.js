@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const folderSchema = mongoose.Schema({
   name: {
-    String,
+    type: String,
     required: true,
     maxlength: 20,
   },
@@ -40,4 +40,4 @@ folderSchema.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('Blog', folderSchema);
+module.exports = mongoose.model('Folder', folderSchema);

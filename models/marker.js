@@ -9,6 +9,10 @@ const markerSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  content: {
+    type: String,
+    required: true,
+  },
   color: {
     type: String,
     enum: [

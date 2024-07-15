@@ -2,8 +2,10 @@ const config = require('./utils/config');
 const express = require('express');
 const app = express();
 const cors = require('cors');
-require('express-async-errors');
-const blogsRouter = require('./controllers/blogs');
+const folderRouter = require('./controllers/folder');
+const bookRouter = require('./controllers/book');
+const markerRouter = require('./controllers/marker');
+const statisticsRouter = require('./controllers/statistics');
 const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const middleware = require('./utils/middleware');
@@ -28,7 +30,10 @@ app.use(express.static('dist'));
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-app.use('/api/blogs', blogsRouter);
+app.use('/api/folders', folderRouter);
+app.use('/api/books', bookRouter);
+app.use('/api/statistics', statisticsRouter);
+app.use('/api/markers', markerRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 

@@ -5,9 +5,16 @@ const User = require('../models/user');
 const userExtractor = require('../utils/middleware').userExtractor;
 
 router.get('/', async (request, response) => {
-  const folders = await Folder.find({}).populate('user', {
-    username: 1,
-    name: 1,
+  const folders = await Folder.find({}).populate('book', {
+    bookname: 1,
+    id: 1,
+    statusOfreading: 1,
+    author: 1,
+    createdAt: 1,
+    updatedAt: 1,
+    pagesNumber: 1,
+    stopInPage: 1,
+    //pode ser _id
   });
   response.json(folders);
 });
@@ -60,20 +67,26 @@ router.delete('/:id', userExtractor, async (request, response) => {
   response.status(204).end();
 });
 
-router.put('/:id', async (request, response) => {
-  const body = request.body;
+router.put('/:id', userExtractor, async (request, response) => {
+  const { name, color, books } = request.body;
 
-  const folder = {
-    name: body.name,
-    color: body.color,
-    books: body.books,
-  };
+  const user = request.user;
+  const folder = await Folder.findById(request.params.id);
+
+  if (!folder) {
+    return response.status(204).end();
+  }
+
+  if (user._id.toString() !== folder.user.toString()) {
+    return response.status(403).json({ error: 'user not authorized' });
+  }
 
   const updatedFolder = await Folder.findByIdAndUpdate(
     request.params.id,
-    folder,
+    { name, color, books },
     { new: true },
   );
+
   response.json(updatedFolder);
 });
 
