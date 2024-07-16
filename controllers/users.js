@@ -3,7 +3,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 
 router.post('/', async (request, response) => {
-  const { username, name, password } = request.body;
+  const { username, email, password } = request.body;
 
   if (!password || password.length < 3) {
     return response
@@ -16,7 +16,7 @@ router.post('/', async (request, response) => {
 
   const user = new User({
     username,
-    name,
+    email,
     passwordHash,
   });
   const savedUser = await user.save();
@@ -30,8 +30,7 @@ router.get('/', async (request, response) => {
     color: 1,
     id: 1,
     books: 1,
-    _createdAt: 1,
-    //não sei se é assim
+    createdAt: 1,
   });
   response.json(users);
 });

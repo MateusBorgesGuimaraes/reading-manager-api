@@ -1,25 +1,28 @@
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
-  username: {
-    type: String,
-    minlength: 3,
-    required: true,
-    unique: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  passwordHash: String,
-  folders: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Folder',
+const userSchema = mongoose.Schema(
+  {
+    username: {
+      type: String,
+      minlength: 3,
+      required: true,
+      unique: true,
     },
-  ],
-});
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    passwordHash: String,
+    folders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Folder',
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {

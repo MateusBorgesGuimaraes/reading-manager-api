@@ -5,7 +5,7 @@ const User = require('../models/user');
 const userExtractor = require('../utils/middleware').userExtractor;
 
 router.get('/', async (request, response) => {
-  const folders = await Folder.find({}).populate('book', {
+  const folders = await Folder.find({}).populate('books', {
     bookname: 1,
     id: 1,
     statusOfreading: 1,
@@ -38,10 +38,19 @@ router.post('/', userExtractor, async (request, response) => {
   user.folders = user.folders.concat(folder._id);
 
   await user.save();
-
   const savedFolder = await folder.save();
 
-  response.status(201).json(savedFolder);
+  const userObject = user.toObject();
+  const filteredUser = {
+    username: userObject.username,
+    email: userObject.email,
+    id: userObject._id,
+  };
+
+  const savedFolderObject = savedFolder.toObject();
+  savedFolderObject.user = filteredUser;
+
+  response.status(201).json(savedFolderObject);
 });
 
 router.delete('/:id', userExtractor, async (request, response) => {

@@ -6,7 +6,11 @@ const User = require('../models/user');
 router.post('/', async (request, response) => {
   const { username, password } = request.body;
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username }).populate('folders', {
+    name: 1,
+    colors: 1,
+    books: 1,
+  });
 
   try {
     await bcrypt.compare(password, user.passwordHash);
@@ -30,9 +34,12 @@ router.post('/', async (request, response) => {
 
   const token = jwt.sign(userForToken, process.env.SECRET);
 
-  response
-    .status(200)
-    .send({ token, username: user.username, name: user.name });
+  response.status(200).send({
+    token,
+    username: user.username,
+    email: user.email,
+    folders: user.folders,
+  });
 });
 
 module.exports = router;

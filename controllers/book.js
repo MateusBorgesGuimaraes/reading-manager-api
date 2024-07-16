@@ -80,13 +80,12 @@ router.delete('/:id', userExtractor, async (request, response) => {
     return response.status(204).end();
   }
 
-  const folder = await Folder.findById(book.folder);
-
   if (user.id.toString() !== folder.user.toString()) {
     return response.status(403).json({ error: 'user not authorized' });
   }
 
   await book.deleteOne();
+  const folder = await Folder.findById(book.folder);
 
   folder.books = folder.books.filter(
     (b) => b._id.toString() !== book._id.toString(),
@@ -116,10 +115,11 @@ router.put('/:id', userExtractor, async (request, response) => {
     return response.status(204).end();
   }
 
-  const bookFolder = await Folder.findById(book.folder);
-  if (user._id.toString() !== bookFolder.user.toString()) {
+  if (user._id.toString() !== book.user.toString()) {
     return response.status(403).json({ error: 'user not authorized' });
   }
+
+  const bookFolder = await Folder.findById(book.folder);
 
   const updatedBook = await Book.findByIdAndUpdate(
     request.params.id,
