@@ -1,4 +1,3 @@
-// routes/statistics.js
 const router = require('express').Router();
 const User = require('../models/user');
 const Book = require('../models/book');
@@ -6,10 +5,10 @@ const Folder = require('../models/folder');
 const Marker = require('../models/marker');
 const userExtractor = require('../utils/middleware').userExtractor;
 
-router.get('/user/:id', userExtractor, async (request, response) => {
-  const userId = request.params.id;
+router.get('/user', userExtractor, async (request, response) => {
+  const userId = request.user.id.toString();
 
-  if (request.user.id.toString() !== userId) {
+  if (!userId) {
     return response.status(403).json({ error: 'user not authorized' });
   }
 

@@ -8,8 +8,9 @@ router.post('/', async (request, response) => {
 
   const user = await User.findOne({ username }).populate('folders', {
     name: 1,
-    colors: 1,
+    color: 1,
     books: 1,
+    createdAt: 1,
   });
 
   try {

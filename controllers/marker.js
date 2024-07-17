@@ -16,6 +16,21 @@ router.get('/', async (request, response) => {
   response.json(markers);
 });
 
+router.get('/:id', async (request, response) => {
+  try {
+    const marker = await Marker.findById(request.params.id);
+
+    if (!marker) {
+      return response.status(404).json({ error: 'marker not found' });
+    }
+
+    response.json(marker);
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ error: 'internal server error' });
+  }
+});
+
 router.post('/', userExtractor, async (request, response) => {
   const { markerName, page, content, color, bookId } = request.body;
 
@@ -84,7 +99,7 @@ router.delete('/:id', userExtractor, async (request, response) => {
 });
 
 router.put('/:id', userExtractor, async (request, response) => {
-  const { markerName, page, content, color } = request.body;
+  const { markerName, page, content, color, book } = request.body;
 
   const user = request.user;
 
@@ -93,8 +108,8 @@ router.put('/:id', userExtractor, async (request, response) => {
     return response.status(204).end();
   }
 
-  const book = await Book.findById(marker.book);
-  const folder = await Folder.findById(book.folder);
+  const bookMarker = await Book.findById(marker.book);
+  const folder = await Folder.findById(bookMarker.folder);
 
   if (user._id.toString() !== folder.user.toString()) {
     return response.status(403).json({ error: 'user not authorized' });
@@ -102,7 +117,7 @@ router.put('/:id', userExtractor, async (request, response) => {
 
   const updatedMarker = await Marker.findByIdAndUpdate(
     request.params.id,
-    { markerName, page, content, color },
+    { markerName, page, content, color, book },
     { new: true },
   );
 
