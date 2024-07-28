@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 router.post('/', async (request, response) => {
   const { username, email, password } = request.body;
@@ -20,10 +21,17 @@ router.post('/', async (request, response) => {
     passwordHash,
   });
   const savedUser = await user.save();
-  response.status(201).json(savedUser);
+
+  const userForToken = {
+    username: savedUser.username,
+    id: savedUser._id,
+  };
+
+  const token = jwt.sign(userForToken, process.env.SECRET);
+
+  response.status(200).send({ token });
 });
 
-//pode ser folder
 router.get('/', async (request, response) => {
   const users = await User.find({}).populate('folders', {
     name: 1,

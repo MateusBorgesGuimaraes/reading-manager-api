@@ -2,29 +2,24 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const User = require('../models/user');
+const { userExtractor } = require('../utils/middleware');
 
 router.post('/', async (request, response) => {
   const { username, password } = request.body;
 
-  const user = await User.findOne({ username }).populate('folders', {
-    name: 1,
-    color: 1,
-    books: 1,
-    createdAt: 1,
-  });
+  const user = await User.findOne({ username });
 
-  try {
-    await bcrypt.compare(password, user.passwordHash);
-  } catch (error) {
-    console.log('error:', error);
+  if (!user) {
+    return response.status(401).json({
+      error: 'usuario ou senha invalidos',
+    });
   }
 
-  const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.passwordHash);
+  const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
 
-  if (!(user && passwordCorrect)) {
+  if (!passwordCorrect) {
     return response.status(401).json({
-      error: 'invalid username or password',
+      error: 'usuario ou senha invalidos',
     });
   }
 
@@ -35,11 +30,23 @@ router.post('/', async (request, response) => {
 
   const token = jwt.sign(userForToken, process.env.SECRET);
 
-  response.status(200).send({
-    token,
-    username: user.username,
-    email: user.email,
-    folders: user.folders,
+  response.status(200).send({ token });
+});
+
+router.get('/user', userExtractor, async (request, response) => {
+  const user = request.user;
+
+  const populatedUser = await User.findById(user._id).populate('folders', {
+    name: 1,
+    color: 1,
+    books: 1,
+    createdAt: 1,
+  });
+
+  response.status(200).json({
+    username: populatedUser.username,
+    email: populatedUser.email,
+    folders: populatedUser.folders,
   });
 });
 
