@@ -16,7 +16,6 @@ router.get('/', async (request, response) => {
     updatedAt: 1,
     pagesNumber: 1,
     stopInPage: 1,
-    //pode ser _id
   });
   response.json(folders);
 });
