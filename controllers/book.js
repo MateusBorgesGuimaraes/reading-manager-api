@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const router = require('express').Router();
 const Book = require('../models/book');
+const Marker = require('../models/marker');
 const User = require('../models/user');
 const Folder = require('../models/folder');
 const userExtractor = require('../utils/middleware').userExtractor;
