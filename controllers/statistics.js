@@ -53,10 +53,10 @@ router.get('/user', userExtractor, async (request, response) => {
 
     const totalReadingTime = books.reduce((acc, book) => {
       const timeParts = book.timeSpent.split(':');
-      const hours = parseInt(timeParts[0], 10);
-      const minutes = parseInt(timeParts[1], 10);
-      const seconds = parseInt(timeParts[2], 10);
-      return acc + hours * 3600 + minutes * 60 + seconds;
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[1]);
+      const totalHours = hours + minutes / 60;
+      return acc + totalHours;
     }, 0);
 
     const completionRate =

@@ -35,24 +35,28 @@ router.post('/', userExtractor, async (request, response) => {
   const { markerName, page, content, color, bookId } = request.body;
 
   if (!markerName || !page || !content || !bookId) {
+    console.log('cmampos faltando');
     return response.status(400).json({ error: 'missing required fields' });
   }
 
   const user = request.user;
 
   if (!user) {
+    console.log('sem user');
     return response.status(403).json({ error: 'user missing' });
   }
 
   const book = await Book.findById(bookId);
 
   if (!book) {
+    console.log('livro nao encontrado');
     return response.status(400).json({ error: 'book not found' });
   }
 
   const folder = await Folder.findById(book.folder);
 
   if (user._id.toString() !== folder.user.toString()) {
+    console.log('suier nao autoruzado');
     return response.status(403).json({ error: 'user not authorized' });
   }
 
